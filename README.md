@@ -122,7 +122,7 @@ The `import` statement lists a few dependencies that you will need for your chai
 
 Init is called when you first deploy your chaincode. As the name implies, this function should be used to do any initialization your chaincode needs. In our example, we use Init to configure the initial state of a single key/value pair on the ledger.
 
-In your `chaincode_start.go` file, change the `Init` function so that it stores the first element in the `args` argument to the key "hello_world".
+In your `chaincode_start.go` file, change the `Init` function so that it stores the first element in the `args` argument to the key "user_info".
 
 ```go
 func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
@@ -130,7 +130,7 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface, function string
 		return nil, errors.New("Incorrect number of arguments. Expecting 1")
 	}
 
-    err := stub.PutState("hello_world", []byte(args[0]))
+    err := stub.PutState("user_info", []byte(args[0]))
     if err != nil {
         return nil, err
     }
@@ -139,7 +139,7 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface, function string
 }
 ```
 
-This is done by using the stub function `stub.PutState`. The function interprets the first argument sent in the deployment request as the value to be stored under the key 'hello_world' in the ledger. Where did this argument come from, and what is a deploy request? All will be explained after we finish implementing the chaincode interface. If an error occurs because the wrong number of arguments was passed in or because something went wrong when writing to the ledger, then this function will return an error. Otherwise, it exits cleanly, returning nothing.
+This is done by using the stub function `stub.PutState`. The function interprets the first argument sent in the deployment request as the value to be stored under the key 'user_info' in the ledger. Where did this argument come from, and what is a deploy request? All will be explained after we finish implementing the chaincode interface. If an error occurs because the wrong number of arguments was passed in or because something went wrong when writing to the ledger, then this function will return an error. Otherwise, it exits cleanly, returning nothing.
 
 ### Invoke()
 
@@ -351,7 +351,7 @@ The long string response for the deployment will contain an ID that is associate
 
 ### Query
 
-Next, let's query the chaincode for the value of `hello_world`, the key we set with the `Init` function.
+Next, let's query the chaincode for the value of `user_info`, the key we set with the `Init` function.
 
 - Create a POST request like the example below.
 
@@ -371,7 +371,7 @@ Next, let's query the chaincode for the value of `hello_world`, the key we set w
       "ctorMsg": {
         "function": "read",
         "args": [
-          "hello_world"
+          "user_info"
         ]
       },
       "secureContext": "<YOUR_USER_HERE>"
@@ -384,11 +384,11 @@ Next, let's query the chaincode for the value of `hello_world`, the key we set w
 
   ![/chaincode query response](imgs/query_response.PNG)
 
-Hopefully you see that the value of `hello_world` is "hi there", as you specified in the body of the deploy request.
+Hopefully you see that the value of `user_info` is "hi there", as you specified in the body of the deploy request.
 
 ### Invoke
 
-Next, call your generic `write` function by invoking your chaincode and changing the value of "hello_world" to "go away".
+Next, call your generic `write` function by invoking your chaincode and changing the value of "user_info" to "go away".
 
 - Create a POST request like the example below.
 
@@ -408,7 +408,7 @@ Next, call your generic `write` function by invoking your chaincode and changing
       "ctorMsg": {
         "function": "write",
         "args": [
-          "hello_world", "go away"
+          "user_info", "go away"
         ]
       },
       "secureContext": "<YOUR_USER_HERE>"
